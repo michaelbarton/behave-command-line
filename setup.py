@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import behave_command_line
 
 setup(
-    name                 = 'behave-command-line',
+    name                 = 'behave_command_line',
     version              = behave_command_line.__version__,
     description          = 'Functions for command line cucumber testing with behave',
     author               = 'Michael Barton',
