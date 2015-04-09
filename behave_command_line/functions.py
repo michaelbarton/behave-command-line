@@ -1,7 +1,7 @@
 import sys,os.path
 
 import nose.tools                     as nt
-import behave_command_line.assertions as asrt
+import more_assertive_nose.assertions as asrt
 import string                         as st
 
 from behave import *
