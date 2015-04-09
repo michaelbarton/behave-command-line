@@ -1,7 +1,7 @@
 language: python
 python:
   - "2.7"
-install: "pip install -r requirements.txt"
+install: "pip install --extra-index-url https://pypi.fury.io/8w9pcGeJPCmAGrxTL_Ze/michaelbarton/ -r requirements.txt"
 
 after_success:
   - "./script/deploy"
