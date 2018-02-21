@@ -1,7 +1,7 @@
 import sys,os.path
 
+import assertions
 import nose.tools                     as nt
-import more_assertive_nose.assertions as asrt
 import string                         as st
 
 from behave import *
@@ -86,7 +86,7 @@ def step_impl(context,stream):
         s = context.output.stderr
     else:
         raise RuntimeError('Unknown stream "{}"'.format(stream))
-    asrt.assert_diff(context.text, s)
+    assertions.assert_diff(context.text, s)
 
 @then('The exit code should be {code}')
 def step_impl(context,code):
@@ -112,7 +112,7 @@ def step_impl(context, target):
     nt.assert_in(target, context.output.files_created.keys(),
             "The file '{}' does not exist.".format(target))
     with open(context.output.files_created[target].full,'r') as f:
-        asrt.assert_diff(context.text, f.read())
+        assertions.assert_diff(context.text, f.read())
 
 @then('the file "{target}" should contain "{contents}"')
 def step_impt(context, target, contents):
@@ -136,7 +136,7 @@ def step_impl(context,target):
 @then(u'the file "{target}" should should have the permissions "{permission}"')
 def step_impl(context,target,permission):
     f = context.output.files_created[target].full
-    asrt.assert_permission(f,permission)
+    assertions.assert_permission(f,permission)
 
 @then('the standard {stream} should be empty')
 def step_impl(context,stream):
@@ -146,5 +146,5 @@ def step_impl(context,stream):
         s = context.output.stderr
     else:
         raise Error('Unknown stream "{}"').format(stream)
-    asrt.assert_empty(s)
+    assertions.assert_empty(s)
 
