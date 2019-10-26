@@ -1,12 +1,6 @@
-version := $(shell python setup.py --version)
-build   := dist/behave_command_line-$(version).tar.gz
+DOCKER = docker-compose run build_image
 
-deploy: $(build)
-	curl \
-	  --form package=@$< \
-	  'https://8w9pcGeJPCmAGrxTL_Ze@push.fury.io/michaelbarton/'
+all: build
 
-build: $(build)
-
-$(build): $(shell find behave_command_line) requirements.txt
-	python setup.py sdist
+build: $(shell find behave_command_line) setup.py setup.cfg requirements.txt Dockerfile
+	$(DOCKER) python3 setup.py sdist bdist
