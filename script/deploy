@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [[ ${BRANCH} == "master" ]]; then
-  make deploy
-else
-  echo "Skipping deploy as this not the master branch."
-fi
-
