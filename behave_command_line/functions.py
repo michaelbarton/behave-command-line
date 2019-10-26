@@ -1,8 +1,7 @@
-import sys,os.path
-
-import nose.tools                     as nt
-import more_assertive_nose.assertions as asrt
-import string                         as st
+import gzip
+import os.path
+import re
+import string
 
 from behave import *
 
@@ -22,7 +21,7 @@ def step_impl(context,target):
 
 @given(u'I create a "{delimiter}" delimited file "{target}" with the contents')
 def step_impl(context, delimiter, target):
-    contents = st.join([st.join(row, delimiter) for row in context.table], "\n")
+    contents = string.join([string.join(row, delimiter) for row in context.table], "\n")
 
     path = os.path.join(context.env.cwd,target)
     with open(path,'w') as f:
@@ -30,7 +29,6 @@ def step_impl(context, delimiter, target):
 
 @given(u'I gzip the file "{file_}"')
 def step_impl(context, file_):
-    import gzip
     path = os.path.join(context.env.cwd,file_)
     with open(path, 'rb') as f_in:
         with gzip.open(path + '.gz', 'wb') as f_out:
@@ -43,9 +41,8 @@ def step_impl(context,target):
 
 @when('I run the command "{command}" with the arguments')
 def step_impl(context, command):
-    import re
 
-    arguments = st.join([st.join(row,' ') for row in context.table], ' ')
+    arguments = string.join([string.join(row,' ') for row in context.table], ' ')
     arguments = re.sub(r'\s+', ' ', arguments.strip())
 
     context.output = context.env.run(command, *arguments.split(' '),
@@ -66,7 +63,7 @@ def step_impl(context, stream, output):
         s = context.output.stderr
     else:
         raise RuntimeError('Unknown stream "{}"'.format(stream))
-    nt.assert_in(output, s)
+    assert s in output
 
 @then('the standard {stream} should contain')
 def step_impl(context,stream):
@@ -76,7 +73,7 @@ def step_impl(context,stream):
         s = context.output.stderr
     else:
         raise RuntimeError('Unknown stream "{}"'.format(stream))
-    nt.assert_in(context.text.strip(), s)
+    assert s in context.text.strip()
 
 @then('the standard {stream} should equal')
 def step_impl(context,stream):
@@ -86,21 +83,19 @@ def step_impl(context,stream):
         s = context.output.stderr
     else:
         raise RuntimeError('Unknown stream "{}"'.format(stream))
-    asrt.assert_diff(context.text, s)
+    assert s == context.text
 
 @then('The exit code should be {code}')
 def step_impl(context,code):
-    nt.assert_equal(context.output.returncode, int(code))
+    assert context.output.returncode == int(code)
 
 @then('the {thing} "{target}" should exist')
 def step_impl(context, thing, target):
-    nt.assert_in(target,context.output.files_created.keys(),
-            "The {0} '{1}' does not exist.".format(thing, target))
+    assert target in context.output.files_created.keys(), "The {0} '{1}' does not existring.".format(thing, target)
 
 @then('the {thing} "{target}" should not exist')
 def step_impl(context, thing, target):
-    nt.assert_not_in(target,context.output.files_created.keys(),
-            "The {0} '{1}' does not exist.".format(thing, target))
+    assert target not in context.output.files_created.keys(), "The {0} '{1}' does not existring.".format(thing, target)
 
 @then('the files should exist')
 def step_impl(context):
@@ -109,10 +104,9 @@ def step_impl(context):
 
 @then('the file "{target}" should exist with the contents')
 def step_impl(context, target):
-    nt.assert_in(target, context.output.files_created.keys(),
-            "The file '{}' does not exist.".format(target))
+    assert target in context.output.files_created.keys(), "The file '{}' does not existring.".format(target)
     with open(context.output.files_created[target].full,'r') as f:
-        asrt.assert_diff(context.text, f.read())
+        assert f.read() == context.text
 
 @then('the file "{target}" should contain "{contents}"')
 def step_impt(context, target, contents):
@@ -124,27 +118,25 @@ def step_impt(context, target, contents):
 
 @then('the file "{target}" should include')
 def step_impl(context,target):
-    from re import search
 
     with open(context.output.files_created[target].full,'r') as f:
         contents = f.read()
         for row in context.table:
             regex = row['re_match'].strip()
-            nt.assert_true(search(regex, contents),
-                    "RE '{}' not found in: \n{}".format(regex, contents))
+            assert re.search(regex, contents), "RE '{}' not found in: \n{}".format(regex, contents)
 
 @then(u'the file "{target}" should should have the permissions "{permission}"')
 def step_impl(context,target,permission):
     f = context.output.files_created[target].full
-    asrt.assert_permission(f,permission)
+    assert os.stat(f).st_mode == permission
 
 @then('the standard {stream} should be empty')
 def step_impl(context,stream):
-    if   stream == 'out':
+    if stream == 'out':
         s = context.output.stdout
     elif stream == 'error':
         s = context.output.stderr
     else:
-        raise Error('Unknown stream "{}"').format(stream)
-    asrt.assert_empty(s)
+        raise ValueError('Unknown stream "{}"'.format(stream))
+    assert not s
 
