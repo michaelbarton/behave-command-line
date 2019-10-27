@@ -311,8 +311,6 @@ def the_stream_should_be_empty(context: runner.Context, stream: str) -> None:
         context: Behave context.
         stream: Name of string to check.
 
-    Returns:
-
     """
     stream_contents = get_stream(context, stream)
     assert not stream_contents, "Expected the std{} to be empty but was:\n{}".format(
