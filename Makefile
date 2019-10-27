@@ -1,12 +1,15 @@
-DOCKER = docker-compose run build_image
+DOCKER = docker-compose run --rm build_image
 SRC = $(shell find . -name "*.py")
 
 all: test build
 
-test: fmt_check lint
+test: fmt_check type_check lint
+
+type_check:
+	@$(DOCKER) mypy behave_command_line
 
 lint:
-	$(DOCKER) pylint behave_command_line --rcfile=.pylintrc
+	@$(DOCKER) pylint behave_command_line --rcfile=.pylintrc
 
 fmt:
 	@$(DOCKER) black --line-length 100 $(SRC)

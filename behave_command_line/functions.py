@@ -78,7 +78,7 @@ def create_the_delimited_file_with(context: runner.Context, delimiter: str, targ
         target: Name of file to create.
 
     """
-    contents = "\n".join([delimiter.join(row, delimiter) for row in context.table])
+    contents = "\n".join([delimiter.join(row) for row in context.table])
 
     path = os.path.join(context.env.cwd, target)
     with open(path, "w") as target_file:
