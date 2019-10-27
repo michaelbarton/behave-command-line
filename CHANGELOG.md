@@ -12,7 +12,8 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 
 - Use pytest instead of nosetest for assertions.
 - Drop dependency on `more_assertive_nose` library.
-- Create binary distribution
+- Create binary distribution in addition to source distribution.
+- Code is formatted with black, linted with pylint, and type checked with mypy.
 
 ## 0.0.1 - 2018-02-21
 

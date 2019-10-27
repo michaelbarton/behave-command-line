@@ -3,3 +3,4 @@ dist
 *.pyc
 .idea
 build
+.mypy_cache/

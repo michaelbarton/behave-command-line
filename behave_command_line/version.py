@@ -1,1 +1,3 @@
-__version__ = '0.9.0'
+"""Version number for the package."""
+
+__version__ = "0.9.0"
