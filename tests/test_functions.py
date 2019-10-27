@@ -1,7 +1,3 @@
-def test_get_stream() -> None:
-    pass
-
-
 def test_create_the_file() -> None:
     pass
 

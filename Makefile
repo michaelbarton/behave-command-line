@@ -3,13 +3,16 @@ SRC = $(shell find . -name "*.py")
 
 all: test build
 
-test: fmt_check type_check lint
+test: fmt_check type_check unit_test lint
+
+unit_test:
+	@$(DOCKER) pytest
 
 type_check:
 	@$(DOCKER) mypy behave_command_line
 
 lint:
-	@$(DOCKER) pylint behave_command_line --rcfile=.pylintrc
+	@$(DOCKER) pylint behave_command_line tests --rcfile=.pylintrc
 
 fmt:
 	@$(DOCKER) black --line-length 100 $(SRC)
