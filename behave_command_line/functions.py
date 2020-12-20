@@ -4,8 +4,8 @@ import gzip
 import os.path
 import re
 
+import behave
 from behave import runner
-from behave import step
 
 
 def get_stream(context: runner.Context, stream_name: str) -> str:
@@ -29,7 +29,7 @@ def get_stream(context: runner.Context, stream_name: str) -> str:
     raise ValueError('Unknown stream "{}"'.format(stream_name))
 
 
-@step.given('I create the file "{target}"')
+@behave.given('I create the file "{target}"')
 def create_the_file(context: runner.Context, target: str) -> None:
     """Create a file in the context.
 
@@ -38,9 +38,10 @@ def create_the_file(context: runner.Context, target: str) -> None:
         target: Name of the file to create.
     """
     context.env.run("touch", target)
+    pass
 
 
-@step.given('I delete the {io_type} "{target}"')
+@behave.given('I delete the {io_type} "{target}"')
 def delete_the_file(context: runner.Context, io_type: str, target: str) -> None:
     """Delete the file.
 
@@ -54,7 +55,7 @@ def delete_the_file(context: runner.Context, io_type: str, target: str) -> None:
     context.env.run("rm", "-r", target)
 
 
-@step.given('I create the file "{target}" with the contents')
+@behave.given('I create the file "{target}" with the contents')
 def create_the_file_with(context: runner.Context, target: str) -> None:
     """Create the file with the given contents.
 
@@ -68,7 +69,7 @@ def create_the_file_with(context: runner.Context, target: str) -> None:
         target_file.write(context.text)
 
 
-@step.given(u'I create a "{delimiter}" delimited file "{target}" with the contents')
+@behave.given(u'I create a "{delimiter}" delimited file "{target}" with the contents')
 def create_the_delimited_file_with(context: runner.Context, delimiter: str, target: str) -> None:
     """Create a delimited file with contents.
 
@@ -85,7 +86,7 @@ def create_the_delimited_file_with(context: runner.Context, delimiter: str, targ
         target_file.write(contents)
 
 
-@step.given(u'I gzip the file "{target}"')
+@behave.given(u'I gzip the file "{target}"')
 def gzip_the_file(context: runner.Context, target: str) -> None:
     """Gzip a file
 
@@ -100,7 +101,7 @@ def gzip_the_file(context: runner.Context, target: str) -> None:
             f_out.writelines(f_in)
 
 
-@step.given('I create the directory "{target}"')
+@behave.given('I create the directory "{target}"')
 def create_the_directory(context: runner.Context, target: str) -> None:
     """Create a directory.
 
@@ -113,7 +114,7 @@ def create_the_directory(context: runner.Context, target: str) -> None:
     os.makedirs(path)
 
 
-@step.when('I run the command "{command}" with the arguments')
+@behave.when('I run the command "{command}" with the arguments')
 def run_the_command_with_args(context: runner.Context, command: str) -> None:
     """Run a command with the arguments given in the context table.
 
@@ -131,7 +132,7 @@ def run_the_command_with_args(context: runner.Context, command: str) -> None:
     )
 
 
-@step.when('I run the command "{command}"')
+@behave.when('I run the command "{command}"')
 def run_the_command(context: runner.Context, command: str) -> None:
     """Run a command and arguments.
 
@@ -143,7 +144,7 @@ def run_the_command(context: runner.Context, command: str) -> None:
     context.output = context.env.run(command, expect_error=True, expect_stderr=True)
 
 
-@step.when('the standard {stream} should contain "{expected_contents}"')
+@behave.when('the standard {stream} should contain "{expected_contents}"')
 def the_stream_should_contain(context: runner.Context, stream: str, expected_contents: str) -> None:
     """Ensure the given command stream output stream contains a string.
 
@@ -156,7 +157,7 @@ def the_stream_should_contain(context: runner.Context, stream: str, expected_con
     assert expected_contents in get_stream(context, stream)
 
 
-@step.when("the standard {stream} should contain")
+@behave.when("the standard {stream} should contain")
 def the_stream_should_contain_text(context: runner.Context, stream: str) -> None:
     """Ensure a given command stream contains a text block.
 
@@ -168,7 +169,7 @@ def the_stream_should_contain_text(context: runner.Context, stream: str) -> None
     assert context.text.strip() in get_stream(context, stream)
 
 
-@step.when("the standard {stream} should equal")
+@behave.when("the standard {stream} should equal")
 def the_stream_should_equal(context: runner.Context, stream: str) -> None:
     """Check an output stream is equal to a text block.
 
@@ -180,7 +181,7 @@ def the_stream_should_equal(context: runner.Context, stream: str) -> None:
     assert get_stream(context, stream) == context.text
 
 
-@step.when("The exit code should be {code}")
+@behave.when("The exit code should be {code}")
 def the_exit_code_should_be(context: runner.Context, code: str) -> None:
     """Check expected output code for a command.
 
@@ -192,7 +193,7 @@ def the_exit_code_should_be(context: runner.Context, code: str) -> None:
     assert context.output.returncode == int(code)
 
 
-@step.when('the {io_type} "{target}" should exist')
+@behave.when('the {io_type} "{target}" should exist')
 def the_io_type_was_created(context: runner.Context, io_type: str, target: str) -> None:
     """Check an io type exists
 
@@ -207,7 +208,7 @@ def the_io_type_was_created(context: runner.Context, io_type: str, target: str) 
     )
 
 
-@step.when('the {io_type} "{target}" should not exist')
+@behave.when('the {io_type} "{target}" should not exist')
 def the_io_type_should_not_exist(context: runner.Context, io_type: str, target: str) -> None:
     """Check an io type was not created.
 
@@ -222,7 +223,7 @@ def the_io_type_should_not_exist(context: runner.Context, io_type: str, target: 
     ), "The {0} '{1}' does not existring.".format(io_type, target)
 
 
-@step.when("the files should exist")
+@behave.when("the files should exist")
 def the_files_should_exist(context: runner.Context) -> None:
     """Check a list of files that should have been created.
 
@@ -234,7 +235,7 @@ def the_files_should_exist(context: runner.Context) -> None:
         context.execute_steps(u'then the file "{}" should exist'.format(target_file["file"]))
 
 
-@step.when('the file "{target}" should exist with the contents')
+@behave.when('the file "{target}" should exist with the contents')
 def the_file_should_exist_with(context: runner.Context, target: str) -> None:
     """Check a file exists with a text block.
 
@@ -250,7 +251,7 @@ def the_file_should_exist_with(context: runner.Context, target: str) -> None:
         assert target_file.read() == context.text
 
 
-@step.when('the file "{target}" should contain "{contents}"')
+@behave.when('the file "{target}" should contain "{contents}"')
 def the_file_should_contain(context: runner.Context, target: str, contents: str) -> None:
     """Check a file contains a given string.
 
@@ -272,7 +273,7 @@ def the_file_should_contain(context: runner.Context, target: str, contents: str)
     )
 
 
-@step.when('the file "{target}" should include')
+@behave.when('the file "{target}" should include')
 def the_file_should_include(context: runner.Context, target: str) -> None:
     """Check a file contains a given text block.
 
@@ -289,7 +290,7 @@ def the_file_should_include(context: runner.Context, target: str) -> None:
             assert re.search(regex, contents), "RE '{}' not found in: \n{}".format(regex, contents)
 
 
-@step.when(u'the file "{target}" should should have the permissions "{permission}"')
+@behave.when(u'the file "{target}" should should have the permissions "{permission}"')
 def the_file_should_have_permissions(context: runner.Context, target: str, permission: str) -> None:
     """Check file has expected permissions.
 
@@ -303,7 +304,7 @@ def the_file_should_have_permissions(context: runner.Context, target: str, permi
     assert os.stat(target_file).st_mode == permission
 
 
-@step.when("the standard {stream} should be empty")
+@behave.when("the standard {stream} should be empty")
 def the_stream_should_be_empty(context: runner.Context, stream: str) -> None:
     """Check a command line output stream is empty.
 
