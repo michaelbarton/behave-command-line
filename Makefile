@@ -22,3 +22,8 @@ fmt_check:
 
 build: $(SRC) setup.cfg requirements.txt Dockerfile
 	$(DOCKER) python3 setup.py sdist bdist
+
+# Create a local environment with depdendencies
+.venv:
+	python3 -m venv $@
+	$@/bin/pip3 install -r  requirements/default.txt -r  requirements/dev.txt

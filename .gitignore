@@ -4,3 +4,4 @@ dist
 .idea
 build
 .mypy_cache/
+.venv
