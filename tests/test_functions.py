@@ -15,16 +15,21 @@ def directory() -> pathlib.Path:
 
 
 @pytest.fixture
+def test_file(directory: pathlib.Path) -> pathlib.Path:
+    return directory / "test_file"
+
+
+@pytest.fixture
 def context(directory: pathlib.Path) -> runner.Context:
     test_context = runner.Context(mock.MagicMock())
     test_context.env = scripttest.TestFileEnvironment(str(directory))
     return test_context
 
 
-def test_create_the_file(directory: pathlib.Path, context: runner.Context) -> None:
+def test_create_the_file(test_file: pathlib.Path, context: runner.Context) -> None:
     """Test creation of an empty file."""
-    functions.create_the_file(context, "test_file")
-    assert (directory / "test_file").exists()
+    functions.create_the_file(context, test_file.name)
+    assert test_file.exists()
 
 
 @pytest.mark.parametrize("path_type", ("file", "directory"))
@@ -39,7 +44,12 @@ def test_delete_the_path(path_type: str, directory: pathlib.Path, context: runne
     assert not file_path.exists()
 
 
-def test_create_the_file_with() -> None:
+def test_create_the_file_with(test_file: pathlib.Path, context: runner.Context) -> None:
+    """Test a file can be created with contents"""
+    context.text = "Some text"
+    functions.create_the_file_with(context, test_file.name)
+    assert test_file.read_text() == "Some text"
+
     pass
 
 

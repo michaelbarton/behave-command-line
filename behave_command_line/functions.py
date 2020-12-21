@@ -53,7 +53,7 @@ def delete_filesystem_path(context: runner.Context, io_type: str, target: str) -
     """
     _ = io_type
     if not pathlib.Path(target).exists():
-        raise RuntimeError(f"Cannot delete {target}, does not exist.")
+        raise RuntimeError(f"Cannot delete `{target}`, does not exist.")
     context.env.run("rm", "-r", target)
 
 
