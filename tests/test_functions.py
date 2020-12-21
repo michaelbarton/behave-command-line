@@ -1,5 +1,31 @@
-def test_create_the_file() -> None:
-    pass
+import pathlib
+import tempfile
+from unittest import mock
+
+import pytest
+import scripttest
+
+from behave_command_line import functions
+from behave import runner
+
+
+@pytest.fixture
+def directory() -> pathlib.Path:
+    return pathlib.Path(tempfile.mkdtemp() + "/test")
+
+
+@pytest.fixture
+def context(directory: pathlib.Path) -> runner.Context:
+    test_context = runner.Context(mock.MagicMock())
+    test_context.env = scripttest.TestFileEnvironment(str(directory))
+    return test_context
+
+
+def test_create_the_file(directory: pathlib.Path, context: runner.Context) -> None:
+    """Test creation of an empty file."""
+    functions.create_the_file(context, "test_file")
+    assert (directory / "test_file").exists()
+
 
 
 def test_delete_the_file() -> None:

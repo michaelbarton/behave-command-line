@@ -2,6 +2,7 @@
 
 import gzip
 import os.path
+import pathlib
 import re
 
 import behave
@@ -38,7 +39,6 @@ def create_the_file(context: runner.Context, target: str) -> None:
         target: Name of the file to create.
     """
     context.env.run("touch", target)
-    pass
 
 
 @behave.given('I delete the {io_type} "{target}"')
@@ -52,6 +52,8 @@ def delete_the_file(context: runner.Context, io_type: str, target: str) -> None:
 
     """
     _ = io_type
+    if not pathlib.Path(target).exists():
+        return
     context.env.run("rm", "-r", target)
 
 
