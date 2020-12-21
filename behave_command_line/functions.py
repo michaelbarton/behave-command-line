@@ -42,8 +42,8 @@ def create_the_file(context: runner.Context, target: str) -> None:
 
 
 @behave.given('I delete the {io_type} "{target}"')
-def delete_the_file(context: runner.Context, io_type: str, target: str) -> None:
-    """Delete the file.
+def delete_filesystem_path(context: runner.Context, io_type: str, target: str) -> None:
+    """Delete a given file system path.
 
     Args:
         context: Behave runner context
@@ -53,7 +53,7 @@ def delete_the_file(context: runner.Context, io_type: str, target: str) -> None:
     """
     _ = io_type
     if not pathlib.Path(target).exists():
-        return
+        raise RuntimeError(f"Cannot delete {target}, does not exist.")
     context.env.run("rm", "-r", target)
 
 

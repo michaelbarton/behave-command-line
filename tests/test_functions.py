@@ -27,9 +27,16 @@ def test_create_the_file(directory: pathlib.Path, context: runner.Context) -> No
     assert (directory / "test_file").exists()
 
 
-
-def test_delete_the_file() -> None:
-    pass
+@pytest.mark.parametrize("path_type", ("file", "directory"))
+def test_delete_the_path(path_type: str, directory: pathlib.Path, context: runner.Context) -> None:
+    """Test a file system path can be deleted."""
+    file_path = directory / "test_file"
+    if path_type == "file":
+        file_path.touch()
+    else:
+        file_path.mkdir()
+    functions.delete_filesystem_path(context, path_type, str(file_path.absolute()))
+    assert not file_path.exists()
 
 
 def test_create_the_file_with() -> None:
