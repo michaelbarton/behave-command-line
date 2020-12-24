@@ -1,3 +1,4 @@
+import gzip
 import pathlib
 import tempfile
 import textwrap
@@ -54,17 +55,24 @@ def test_create_the_file_with(test_file: pathlib.Path, context: runner.Context) 
 
 @pytest.mark.parametrize("delimiter", [",", "|"])
 def test_create_the_delimited_file_with(delimiter: str, test_file: pathlib.Path, context: runner.Context) -> None:
+    """Test can create a tab delimited file as step."""
     context.table = [{"col_1": 1, "col_2": 2}, {"col_1": 3, "col_2": 4}]
     functions.create_the_delimited_file_with(context, delimiter, test_file.name)
-    assert test_file.read_text().strip() == textwrap.dedent(f"""\
+    assert test_file.read_text().strip() == textwrap.dedent(f"""
         col_1{delimiter}col_2
         1{delimiter}2
         3{delimiter}4
     """).strip()
 
 
-def test_gzip_the_file() -> None:
-    pass
+def test_gzip_the_file(test_file: pathlib.Path, context: runner.Context) -> None:
+    """Test can create a gzipped file."""
+    example_text = "some text\nfor testing"
+    test_file.write_text(example_text)
+    functions.gzip_the_file(context, str(test_file))
+
+    with gzip.open(str(test_file) + ".gz", 'rb') as gzip_in:
+        assert gzip_in.read().decode("utf-8") == example_text
 
 
 def test_create_the_directory() -> None:
