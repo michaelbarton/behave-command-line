@@ -75,11 +75,20 @@ def test_gzip_the_file(test_file: pathlib.Path, context: runner.Context) -> None
         assert gzip_in.read().decode("utf-8") == example_text
 
 
-def test_create_the_directory() -> None:
-    pass
+def test_create_the_directory(directory: pathlib.Path, context: runner.Context) -> None:
+    """Test a directory can be created."""
+    new_dir = directory / "test_dir"
+    functions.create_the_directory(context, str(new_dir))
+    assert new_dir.exists()
+    assert new_dir.is_dir()
 
 
-def test_run_the_command_with_args() -> None:
+@pytest.mark.skip()
+def test_run_the_command_with_args(context: runner.Context) -> None:
+    """Test command can be run with arguments"""
+    context.table = []
+    functions.run_the_command_with_args(context, "ls")
+
     pass
 
 
