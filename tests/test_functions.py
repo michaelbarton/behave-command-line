@@ -1,5 +1,6 @@
 import pathlib
 import tempfile
+import textwrap
 from unittest import mock
 
 import pytest
@@ -50,11 +51,16 @@ def test_create_the_file_with(test_file: pathlib.Path, context: runner.Context) 
     functions.create_the_file_with(context, test_file.name)
     assert test_file.read_text() == "Some text"
 
-    pass
 
-
-def test_create_the_delimited_file_with() -> None:
-    pass
+@pytest.mark.parametrize("delimiter", [",", "|"])
+def test_create_the_delimited_file_with(delimiter: str, test_file: pathlib.Path, context: runner.Context) -> None:
+    context.table = [{"col_1": 1, "col_2": 2}, {"col_1": 3, "col_2": 4}]
+    functions.create_the_delimited_file_with(context, delimiter, test_file.name)
+    assert test_file.read_text().strip() == textwrap.dedent(f"""\
+        col_1{delimiter}col_2
+        1{delimiter}2
+        3{delimiter}4
+    """).strip()
 
 
 def test_gzip_the_file() -> None:

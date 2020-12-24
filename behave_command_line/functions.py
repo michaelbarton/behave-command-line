@@ -1,5 +1,6 @@
 """Behave step matchers for working with the file system and command line tools."""
 
+import csv
 import gzip
 import os.path
 import pathlib
@@ -81,11 +82,12 @@ def create_the_delimited_file_with(context: runner.Context, delimiter: str, targ
         target: Name of file to create.
 
     """
-    contents = "\n".join([delimiter.join(row) for row in context.table])
-
     path = os.path.join(context.env.cwd, target)
     with open(path, "w") as target_file:
-        target_file.write(contents)
+        writer = csv.DictWriter(target_file, fieldnames=context.table[0].keys(), delimiter=delimiter)
+        writer.writeheader()
+        for row in context.table:
+            writer.writerow(row)
 
 
 @behave.given(u'I gzip the file "{target}"')
