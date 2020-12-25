@@ -128,12 +128,11 @@ def run_the_command_with_args(context: runner.Context, command: str) -> None:
 
     """
 
-    # TODO: Use library to escape bad characters such as semi colons
-    arguments = " ".join([" ".join(row) for row in context.table])
-    arguments = re.sub(r"\s+", " ", arguments.strip())
+    # arguments = " ".join([" ".join(row["arg"]) for row in context.table])
+    # arguments = re.sub(r"\s+", " ", arguments.strip())
 
     context.output = context.env.run(
-        command, *arguments.split(" "), expect_error=True, expect_stderr=True
+        command, *[row["arg"] for row in context.table], expect_error=True, expect_stderr=True
     )
 
 

@@ -83,13 +83,13 @@ def test_create_the_directory(directory: pathlib.Path, context: runner.Context) 
     assert new_dir.is_dir()
 
 
-@pytest.mark.skip()
 def test_run_the_command_with_args(context: runner.Context) -> None:
     """Test command can be run with arguments"""
-    context.table = []
+    context.table = [{"arg": "-l"}, {"arg": "-r"}, {"arg": "/"}]
     functions.run_the_command_with_args(context, "ls")
-
-    pass
+    assert not context.output.stderr
+    assert context.output.stdout
+    assert context.output.returncode == 0
 
 
 def test_run_the_command() -> None:
