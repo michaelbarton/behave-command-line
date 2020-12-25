@@ -84,7 +84,7 @@ def test_create_the_directory(directory: pathlib.Path, context: runner.Context) 
 
 
 def test_run_the_command_with_args(context: runner.Context) -> None:
-    """Test command can be run with arguments"""
+    """Test command can be run with arguments in a context table."""
     context.table = [{"arg": "-l"}, {"arg": "-r"}, {"arg": "/"}]
     functions.run_the_command_with_args(context, "ls")
     assert not context.output.stderr
@@ -92,12 +92,37 @@ def test_run_the_command_with_args(context: runner.Context) -> None:
     assert context.output.returncode == 0
 
 
-def test_run_the_command() -> None:
-    pass
+def test_run_the_command(context: runner.Context) -> None:
+    """Test can run command as a string."""
+    functions.run_the_command(context, "ls -lt /")
+    assert not context.output.stderr
+    assert context.output.stdout
+    assert context.output.returncode == 0
 
 
-def test_the_stream_should_contain() -> None:
-    pass
+@pytest.mark.parametrize("should_fail,stream", [
+    (True, "stderr"),
+    (False, "stderr"),
+    (True, "stdout"),
+    (False, "stdout"),
+])
+def test_the_stream_should_contain(should_fail: bool, stream: str, context: runner.Context) -> None:
+    test_value = "value"
+    context.output = mock.MagicMock()
+    if should_fail:
+        setattr(context.output, stream, "failing")
+    else:
+        setattr(context.output, stream, test_file)
+
+    try:
+        functions.the_stream_should_contain(context, stream.replace("std", ""), test_value)
+    except AssertionError:
+        if should_fail:
+            return
+        pytest.fail("Should not fail when value is in string.")
+
+    if should_fail:
+        pytest.fail("Should fail when value is not in string.")
 
 
 def test_the_stream_should_contain_text() -> None:

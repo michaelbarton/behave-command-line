@@ -28,6 +28,8 @@ def get_stream(context: runner.Context, stream_name: str) -> str:
         return str(context.output.stdout)
     if stream_name == "error":
         return str(context.output.stderr)
+    if stream_name == "err":
+        return str(context.output.stderr)
     raise ValueError('Unknown stream "{}"'.format(stream_name))
 
 
@@ -127,10 +129,6 @@ def run_the_command_with_args(context: runner.Context, command: str) -> None:
         command: Script or binary to run.
 
     """
-
-    # arguments = " ".join([" ".join(row["arg"]) for row in context.table])
-    # arguments = re.sub(r"\s+", " ", arguments.strip())
-
     context.output = context.env.run(
         command, *[row["arg"] for row in context.table], expect_error=True, expect_stderr=True
     )
